@@ -3,14 +3,14 @@ import datetime
 from datetime import timezone
 from bs4 import BeautifulSoup
 
-def get_html(company_code):
+def get_html(ticker):
     session = HTMLSession()
     dt = datetime.datetime.today()
     dt = dt.replace(minute=00, hour=00, second=00)
     timestamp = int(dt.replace(tzinfo=timezone.utc).timestamp())
     five_year_before = timestamp - 60 * 60 *24 *365 * 5 - 60 * 60 *24
 
-    url =  'https://finance.yahoo.com/quote/'+company_code+'/history?period1='+ str(five_year_before) +  '&period2=' + str(timestamp) + '&interval=1mo&filter=history&frequency=1mo&includeAdjustedClose=true'
+    url =  'https://finance.yahoo.com/quote/'+ticker+'/history?period1='+ str(five_year_before) +  '&period2=' + str(timestamp) + '&interval=1mo&filter=history&frequency=1mo&includeAdjustedClose=true'
 
     page = session.get(url)
     page.html.render()
@@ -25,4 +25,4 @@ def get_html(company_code):
     return adj_close
 
 
-print(get_html('APC.DE')[1])
+print(get_html('TSLA'))
