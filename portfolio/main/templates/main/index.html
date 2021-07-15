@@ -47,7 +47,7 @@
   <!-- TradingView Widget END -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <a class="navbar-brand" href="#">Hello {{user.name}}</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -81,5 +81,16 @@
       </div>
     </div>
   </nav>
+  <div class="form-group">
+    <form action="{% url 'index' %}" method="POST">
+        {% csrf_token %}
+        <ul>
+        {{ form.as_ul }}
+        </ul>
+        <div>
+            <button>Register</button>
+        </div>
+    </form>
+    </div>  
 </body>
 </html>

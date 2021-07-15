@@ -13,11 +13,10 @@ class Stock(models.Model):
 class User(models.Model):
     name = models.CharField(max_length=200)
     email = models.EmailField(unique=True)
-    password = forms.CharField(max_length=32, widget=forms.PasswordInput)
-    portfolio = models.ManyToManyField(Stock, blank=True, null=True)
+    password = models.CharField(max_length=50)
+    portfolio = models.ManyToManyField(Stock)
     def __str__(self):
         return f'{self.name} - {self.email})'
-
 
 
 
