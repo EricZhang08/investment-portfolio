@@ -2,7 +2,7 @@ from collections import namedtuple
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import User, Stock
-from .forms import RegistrationForm
+from .forms import RegistrationForm, LoginForm
 # Create your views here.
 
 def register(request):
@@ -27,4 +27,20 @@ def index(request, user_id):
     return render(request, 'main/index.html', {
         'selected_user': selected_user
     })
+
+def login(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user_email = form.cleaned_data['email']
+            user_pwd = form.cleaned_data['password']
+            if User.objects.filter(email=user_email).exists():
+                selected_user = User.objects.get(email=user_email)
+                if selected_user.password == user_pwd:
+                    return redirect('index', user_id=selected_user.id)
+    form = LoginForm()
+    return render(request, 'main/login.html', {
+        'form': form
+    })
+
 
