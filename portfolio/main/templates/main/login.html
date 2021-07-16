@@ -7,7 +7,7 @@
     <title>Investment Portfolio APP</title>
 </head>
 <body>
-    	<!-- TradingView Widget BEGIN -->
+    <!-- TradingView Widget BEGIN -->
 <div class="tradingview-widget-container">
 	<div class="tradingview-widget-container__widget"></div>
 	<div class="tradingview-widget-copyright"><a href="https://www.tradingview.com" rel="noopener" target="_blank"><span class="blue-text">Quotes</span></a> by TradingView</div>
@@ -43,6 +43,17 @@
 	</script>
   </div>
   <!-- TradingView Widget END -->
-  <h1>hello {{selected_user.name}}</h1>
+    <div class="form-group">
+        <form action="{% url 'register' %}" method="POST">
+            {% csrf_token %}
+            <ul>
+            {{ form.as_ul }}
+            </ul>
+            <div>
+                <button>Register</button>
+                <a href="">Or login</a>
+            </div>
+        </form>
+        </div>
 </body>
 </html>
