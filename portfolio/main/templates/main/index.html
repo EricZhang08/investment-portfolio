@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+<<<<<<< HEAD
+=======
+  {% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/auto_complete.css' %}">
+
+
+>>>>>>> 29d83ff69a68cd29904c91adff04053d6b586e8b
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -43,6 +51,61 @@
 	</script>
   </div>
   <!-- TradingView Widget END -->
+<<<<<<< HEAD
   <h1>hello {{selected_user.name}}</h1>
+=======
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Hello {{user.name}}</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Dropdown
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="#">Action</a></li>
+              <li><a class="dropdown-item" href="#">Another action</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+          </li>
+        </ul>
+
+         <form class="d-flex" autocomplete="off" action="/action_page.php">
+          <div class="autocomplete" style="width:300px;">
+          <input id="myInput" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        </div>
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>  
+        <script src="{% static 'js/auto_complete.js' %}"></script>
+          
+      </div>
+    </div>
+  </nav>
+  <div class="form-group">
+    <form action="{% url 'index' %}" method="POST">
+        {% csrf_token %}
+        <ul>
+        {{ form.as_ul }}
+        </ul>
+        <div>
+            <button>Register</button>
+        </div>
+    </form>
+    </div>  
+>>>>>>> 29d83ff69a68cd29904c91adff04053d6b586e8b
 </body>
 </html>
