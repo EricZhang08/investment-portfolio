@@ -5,7 +5,7 @@ from django import forms
 
 class Stock(models.Model):
     ticker = models.CharField(max_length=30)
-    percentage = models.FloatField()
+    percentage = models.FloatField(blank=True, null=True)
 
     def __str__(self):
         return self.ticker

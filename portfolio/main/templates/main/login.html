@@ -18,6 +18,9 @@
                 <button>Login</button>
                 <a href="">Or register</a>
             </div>
+            {% if form.errors %}
+            <p>username or password incorrect</p>
+            {% endif %}
         </form>
         </div>
 </body>

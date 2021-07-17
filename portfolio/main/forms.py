@@ -11,3 +11,8 @@ class RegistrationForm(forms.ModelForm):
 class LoginForm(forms.Form):
     email = forms.EmailField(label='Your email')
     password = forms.CharField(widget=forms.PasswordInput)
+
+class SearchForm(forms.Form):
+    company_name = forms.CharField(widget= forms.TextInput
+                           (attrs={'class':'form-control me-2',
+				   'id':'myInput'}))

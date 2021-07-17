@@ -79,17 +79,33 @@
           </li>
         </ul>
 
-         <form class="d-flex" autocomplete="off" action="/action_page.php">
+         <!-- <form class="d-flex" autocomplete="off" action="/action_page.php">
           <div class="autocomplete" style="width:300px;">
           <input id="myInput" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         </div>
           <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>  
-        <script src="{% static 'js/auto_complete.js' %}"></script>
+        </form>   -->
+        
           
       </div>
     </div>
   </nav>
   <h1>hello {{selected_user.name}}</h1>
+  <div class="jumbotron m-3">
+    <div class="form-group">
+      <form class="d-flex" autocomplete="off" action="{% url 'index' selected_user.id %}" method="POST">
+          {% csrf_token %}
+          <div class="autocomplete" style="width:300px;">
+            <ul>
+              {{ search_form.as_ul }}
+              </ul>
+          </div>
+          <div>
+              <button class="btn btn-outline-success" type="submit">add</button>
+          </div>
+      </form>
+      </div>
+    <script src="{% static 'js/auto_complete.js' %}"></script>
+  </div>
 </body>
 </html>
