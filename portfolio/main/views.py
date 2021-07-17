@@ -4,50 +4,49 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import User, Stock, Ticker
 from .forms import RegistrationForm, LoginForm, SearchForm
-from requests_html import HTMLSession
+from requests_html import AsyncHTMLSession
 import datetime
 from datetime import timezone
 from bs4 import BeautifulSoup
 import json
 import csv
+import asyncio
 
-class findData():
-    def __init__(self):
-        pass
-    def find_html(self,ticker):
-        session = HTMLSession()
-        dt = datetime.datetime.today()
-        dt = dt.replace(minute=00, hour=00, second=00)
-        timestamp = int(dt.replace(tzinfo=timezone.utc).timestamp())
-        five_year_before = timestamp - 60 * 60 *24 *365 * 5 - 60 * 60 *24
 
-        url =  'https://finance.yahoo.com/quote/'+ticker+'/history?period1='+ str(five_year_before) +  '&period2=' + str(timestamp) + '&interval=1mo&filter=history&frequency=1mo&includeAdjustedClose=true'
+# def find_html(self,ticker):
+#     session = HTMLSession()
+#     dt = datetime.datetime.today()
+#     dt = dt.replace(minute=00, hour=00, second=00)
+#     timestamp = int(dt.replace(tzinfo=timezone.utc).timestamp())
+#     five_year_before = timestamp - 60 * 60 *24 *365 * 5 - 60 * 60 *24
 
-        page = session.get(url)
-        page.html.render()
-        soup = BeautifulSoup(page.content, 'html.parser')
+#     url =  'https://finance.yahoo.com/quote/'+ticker+'/history?period1='+ str(five_year_before) +  '&period2=' + str(timestamp) + '&interval=1mo&filter=history&frequency=1mo&includeAdjustedClose=true'
 
-        table = soup.find( "table", {"data-test":"historical-prices"} )
-        adj_close = list()
-        for row in table.tbody.findAll("tr"):
-            temp = row.findAll('td')
-            if (len(temp)>6):
-                adj_close.append(temp[5].text)
-        return adj_close
+#     page = session.get(url)
+#     page.html.render()
+#     soup = BeautifulSoup(page.content, 'html.parser')
 
-    def find_ticker(self,company_name):
-        with open('/Users/ding/investment-portfolio/portfolio/main/ticker.csv') as f:
-            reader = csv.reader(f)
-            for row in reader:
-                _, created = Ticker.objects.get_or_create(
-                    stock_name=row[1],
-                    ticker=row[0],
-                    )
-        return Ticker.objects.get(stock_name=company_name).ticker
-    
-    def get_data(self,name):
-        ticker = self.find_ticker(name)
-        return self.find_html(ticker)
+#     table = soup.find( "table", {"data-test":"historical-prices"} )
+#     adj_close = list()
+#     for row in table.tbody.findAll("tr"):
+#         temp = row.findAll('td')
+#         if (len(temp)>6):
+#             adj_close.append(temp[5].text)
+#     return adj_close
+
+# def find_ticker(self,company_name):
+#     with open('/Users/ding/investment-portfolio/portfolio/main/ticker.csv') as f:
+#         reader = csv.reader(f)
+#         for row in reader:
+#             _, created = Ticker.objects.get_or_create(
+#                 stock_name=row[1],
+#                 ticker=row[0],
+#                 )
+#     return Ticker.objects.get(stock_name=company_name).ticker
+
+# def get_data(self,name):
+#     ticker = self.find_ticker(name)
+#     return self.find_html(ticker)
 
 # Create your views here.
 
@@ -113,8 +112,37 @@ def login(request):
 
 def calculate(request, user_id):
     selected_user = User.objects.get(id=user_id)
-    x = findData()
-    x.get_data('Agilent Technologies Inc. Common Stock')
+
+    ticker = Ticker.objects.get(stock_name="Senmiao Technology Limited Common Stock").ticker
+
+
+
+    dt = datetime.datetime.today()
+    dt = dt.replace(minute=00, hour=00, second=00)
+    timestamp = int(dt.replace(tzinfo=timezone.utc).timestamp())
+    five_year_before = timestamp - 60 * 60 *24 *365 * 5 - 60 * 60 *24
+    url =  'https://finance.yahoo.com/quote/'+ticker+'/history?period1='+ str(five_year_before) +  '&period2=' + str(timestamp) + '&interval=1mo&filter=history&frequency=1mo&includeAdjustedClose=true'
+    
+    async def get_post(url):
+        new_loop=asyncio.new_event_loop()
+        asyncio.set_event_loop(new_loop)
+        session = AsyncHTMLSession()
+        resp_page = await session.get(url)
+        await resp_page.html.arender()
+        await session.close()
+        return resp_page
+    
+    page = resp = asyncio.run(get_post(url))
+
+    soup = BeautifulSoup(page.content, 'html.parser')
+
+    table = soup.find( "table", {"data-test":"historical-prices"} )
+    adj_close = list()
+    for row in table.tbody.findAll("tr"):
+        temp = row.findAll('td')
+        if (len(temp)>6):
+            adj_close.append(temp[5].text)
+    print(adj_close)
     # data = x.get_data("Apple Inc. Common Stock")
     # print(data)
     return render(request, 'main/calculate.html', {
