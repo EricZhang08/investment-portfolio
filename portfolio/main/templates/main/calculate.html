@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -91,23 +89,6 @@
     </div>
   </nav>
   <h1>hello {{selected_user.name}}</h1>
-  <div class="jumbotron m-3">
-    <div class="form-group">
-      <form class="d-flex" autocomplete="off" action="{% url 'index' selected_user.id %}" method="POST">
-          {% csrf_token %}
-          <div class="autocomplete" style="width:300px;">
-            <ul>
-              {{ search_form.as_ul }}
-            </ul>
-            
-          </div>
-      </form>
-      <button class="btn btn-outline-success" type="submit">add</button>
-      
-      </div>
-      <a href="{% url 'calculate' selected_user.id %}">Calculate portfolio allocation</a>
-    <script src="{% static 'js/auto_complete.js' %}"></script>
-  </div>
   <div class="container">
     <ul class="list-group">
       {% for stock in portfolio %}
@@ -115,8 +96,5 @@
       {% endfor %}
     </ul>
   </div>
-  
-        
-
-</body>
-</html>
+  </body>   
+  </html>   

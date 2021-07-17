@@ -32,6 +32,7 @@ class findData():
 
     def find_ticker(self,company_name):
         db = self.json
+        print(db)
         d = dict(db)
         return d[company_name]
     
@@ -40,5 +41,5 @@ class findData():
         return self.find_html(ticker)
 
 
-x = findData()
-print(x.get_data("Apple Inc. Common Stock"))
+# x = findData()
+# x.get_data("Apple Inc. Common Stock")
