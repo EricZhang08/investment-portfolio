@@ -112,37 +112,38 @@ def login(request):
 
 def calculate(request, user_id):
     selected_user = User.objects.get(id=user_id)
+    portfolio = selected_user.portfolio.all()
+    for stock in portfolio:
+        ticker = Ticker.objects.get(stock_name=stock.ticker).ticker
+        dt = datetime.datetime.today()
+        dt = dt.replace(minute=00, hour=00, second=00)
+        timestamp = int(dt.replace(tzinfo=timezone.utc).timestamp())
+        five_year_before = timestamp - 60 * 60 *24 *365 * 5 - 60 * 60 *24
+        url =  'https://finance.yahoo.com/quote/'+ticker+'/history?period1='+ str(five_year_before) +  '&period2=' + str(timestamp) + '&interval=1mo&filter=history&frequency=1mo&includeAdjustedClose=true'
+        
+        async def get_post(url):
+            new_loop=asyncio.new_event_loop()
+            asyncio.set_event_loop(new_loop)
+            session = AsyncHTMLSession()
+            resp_page = await session.get(url)
+            await resp_page.html.arender()
+            await session.close()
+            return resp_page
+        
+        page = resp = asyncio.run(get_post(url))
 
-    ticker = Ticker.objects.get(stock_name="Senmiao Technology Limited Common Stock").ticker
+        soup = BeautifulSoup(page.content, 'html.parser')
 
-
-
-    dt = datetime.datetime.today()
-    dt = dt.replace(minute=00, hour=00, second=00)
-    timestamp = int(dt.replace(tzinfo=timezone.utc).timestamp())
-    five_year_before = timestamp - 60 * 60 *24 *365 * 5 - 60 * 60 *24
-    url =  'https://finance.yahoo.com/quote/'+ticker+'/history?period1='+ str(five_year_before) +  '&period2=' + str(timestamp) + '&interval=1mo&filter=history&frequency=1mo&includeAdjustedClose=true'
-    
-    async def get_post(url):
-        new_loop=asyncio.new_event_loop()
-        asyncio.set_event_loop(new_loop)
-        session = AsyncHTMLSession()
-        resp_page = await session.get(url)
-        await resp_page.html.arender()
-        await session.close()
-        return resp_page
-    
-    page = resp = asyncio.run(get_post(url))
-
-    soup = BeautifulSoup(page.content, 'html.parser')
-
-    table = soup.find( "table", {"data-test":"historical-prices"} )
-    adj_close = list()
-    for row in table.tbody.findAll("tr"):
-        temp = row.findAll('td')
-        if (len(temp)>6):
-            adj_close.append(temp[5].text)
-    print(adj_close)
+        table = soup.find( "table", {"data-test":"historical-prices"} )
+        dict_adj = {}
+        adj_close = list()
+        for row in table.tbody.findAll("tr"):
+            temp = row.findAll('td')
+            if (len(temp)>6):
+                adj_close.append(float(temp[5].text))
+        dict_adj[stock.ticker] = adj_close
+            
+        print(dict_adj)
     # data = x.get_data("Apple Inc. Common Stock")
     # print(data)
     return render(request, 'main/calculate.html', {
