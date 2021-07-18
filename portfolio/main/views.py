@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 import json
 import csv
 import asyncio
+import hashlib
 
 
 # def find_html(self,ticker):
@@ -54,7 +55,7 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            user_pwd = form.cleaned_data['password']
+            user_pwd = hashlib.md5(str(form.cleaned_data['password']).encode('utf-8')).hexdigest()
             user_email = form.cleaned_data['email']
             user_name = form.cleaned_data['name']
             user = User(name=user_name, email=user_email, password=user_pwd)
@@ -92,9 +93,11 @@ def login(request):
         form = LoginForm(request.POST)
         if form.is_valid():
             user_email = form.cleaned_data['email']
-            user_pwd = form.cleaned_data['password']
+            user_pwd = hashlib.md5(str(form.cleaned_data['password']).encode('utf-8')).hexdigest()
+  
             if User.objects.filter(email=user_email).exists():
                 selected_user = User.objects.get(email=user_email)
+                print(selected_user.password == user_pwd)
                 if selected_user.password == user_pwd:
                     # return redirect('index', user_id=selected_user.id)
                     return index(request, selected_user.id)
