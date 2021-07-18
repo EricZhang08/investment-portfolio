@@ -12,6 +12,7 @@ import json
 import csv
 import asyncio
 import hashlib
+from main import my_helpers
 
 
 # def find_html(self,ticker):
@@ -116,6 +117,7 @@ def login(request):
 def calculate(request, user_id):
     selected_user = User.objects.get(id=user_id)
     portfolio = selected_user.portfolio.all()
+    dict_adj = {}
     for stock in portfolio:
         ticker = Ticker.objects.get(stock_name=stock.ticker).ticker
         dt = datetime.datetime.today()
@@ -138,7 +140,7 @@ def calculate(request, user_id):
         soup = BeautifulSoup(page.content, 'html.parser')
 
         table = soup.find( "table", {"data-test":"historical-prices"} )
-        dict_adj = {}
+        
         adj_close = list()
         for row in table.tbody.findAll("tr"):
             temp = row.findAll('td')
@@ -146,13 +148,16 @@ def calculate(request, user_id):
                 adj_close.append(float(temp[5].text))
         dict_adj[stock.ticker] = adj_close
             
-        print(dict_adj)
+        # print(dict_adj)
     # data = x.get_data("Apple Inc. Common Stock")
     # print(data)
+    risk_parity = my_helpers.risk_parity(dict_adj)
     return render(request, 'main/calculate.html', {
         'user_id': user_id,
         'selected_user': selected_user,
         'portfolio': selected_user.portfolio.all(),
+        'risk_parity': risk_parity,
+        'rp_keys': risk_parity.keys(),
         # 'data': data
     })
 

@@ -89,12 +89,22 @@
     </div>
   </nav>
   <h1>hello {{selected_user.name}}</h1>
-  <div class="container">
-    <ul class="list-group">
-      {% for stock in portfolio %}
-      <li class="list-group-item">{{ stock.ticker }}</li>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Stock</th>
+        <th scope="col">Weight</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for k, v in risk_parity.items %}
+      <tr>
+        <!-- <th scope="row">1</th> -->
+        <td>{{k}}</td>
+        <td>{{v}}%</td>
+      </tr>
       {% endfor %}
-    </ul>
-  </div>
+    </tbody>
+  </table>
   </body>   
   </html>   
