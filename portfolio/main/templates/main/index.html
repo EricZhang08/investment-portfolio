@@ -6,6 +6,8 @@
   {% load static %}
 
     <link rel="stylesheet" type="text/css" href="{% static 'css/auto_complete.css' %}"> 
+    <link rel="stylesheet" type="text/css" href="{% static 'css/loader.css' %}"> 
+
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,6 +49,9 @@
 	{"locale": "en"}
   }
 	</script>
+
+
+
   </div>
   <!-- TradingView Widget END -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -106,10 +111,24 @@
      
       
       </div>
-      <a href="{% url 'calculate' selected_user.id %}">Calculate portfolio allocation</a>
+      <a onclick="loadingPage()" href="{% url 'calculate' selected_user.id %}">Calculate portfolio allocation</a>
+
+      <script>
+        function loadingPage() {
+          document.getElementById("loading-wrapper").style.display = "inherit";
+          document.getElementById("stock").style.display = "none"
+        }
+        
+      </script>
+      
+
+      <div class="loader" id ="loading-wrapper" style="display: none;"></div>
+
     <script src="{% static 'js/auto_complete.js' %}"></script>
   </div>
-  <div class="container">
+
+
+  <div class="container" id="stock">
     <ul class="list-group">
       {% for stock in portfolio %}
       <li class="list-group-item">{{ stock.ticker }}</li>
@@ -117,7 +136,7 @@
     </ul>
   </div>
   
-        
+    
 
 </body>
 </html>
