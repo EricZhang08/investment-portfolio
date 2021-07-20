@@ -151,10 +151,10 @@ def calculate(request, user_id):
             adj_close = adj_close[0:60]
         dict_adj[stock.ticker] = adj_close
             
-        print(dict_adj)
     # data = x.get_data("Apple Inc. Common Stock")
     # print(data)
     risk_parity = my_helpers.risk_parity(dict_adj)
+    my_helpers.solver(dict_adj)
     return render(request, 'main/calculate.html', {
         'user_id': user_id,
         'selected_user': selected_user,
