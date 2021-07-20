@@ -9,7 +9,7 @@ class MainConfig(AppConfig):
             return True
         from .models import User, Stock, Ticker
         import csv
-        with open('/Users/ericzhang/portfolio-project/portfolio/main/ticker.csv') as f:
+        with open('./main/ticker.csv') as f:
             reader = csv.reader(f)
             for row in reader:
                 _, created = Ticker.objects.get_or_create(
