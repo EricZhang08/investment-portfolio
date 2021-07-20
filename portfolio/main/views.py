@@ -146,9 +146,12 @@ def calculate(request, user_id):
             temp = row.findAll('td')
             if (len(temp)>6):
                 adj_close.append(float(temp[5].text))
+        adj_close.reverse()
+        if len(adj_close)>60:
+            adj_close = adj_close[0:60]
         dict_adj[stock.ticker] = adj_close
             
-        # print(dict_adj)
+        print(dict_adj)
     # data = x.get_data("Apple Inc. Common Stock")
     # print(data)
     risk_parity = my_helpers.risk_parity(dict_adj)
@@ -156,8 +159,11 @@ def calculate(request, user_id):
         'user_id': user_id,
         'selected_user': selected_user,
         'portfolio': selected_user.portfolio.all(),
-        'risk_parity': risk_parity,
-        'rp_keys': risk_parity.keys(),
+        'risk_parity': risk_parity['weights'],
+        'rp_keys': risk_parity['weights'].keys(),
+        'ave_return': risk_parity['stats']['ave_return'],
+        'portfolio_vol': risk_parity['stats']['portfolio_vol']
+
         # 'data': data
     })
 
