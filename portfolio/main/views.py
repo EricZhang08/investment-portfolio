@@ -145,7 +145,7 @@ def calculate(request, user_id):
         for row in table.tbody.findAll("tr"):
             temp = row.findAll('td')
             if (len(temp)>6):
-                adj_close.append(float(temp[5].text))
+                adj_close.append(float((temp[5].text).replace(',', '')))
         adj_close.reverse()
         if len(adj_close)>60:
             adj_close = adj_close[0:60]
