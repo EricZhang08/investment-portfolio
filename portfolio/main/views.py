@@ -154,7 +154,7 @@ def calculate(request, user_id):
     # data = x.get_data("Apple Inc. Common Stock")
     # print(data)
     risk_parity = my_helpers.risk_parity(dict_adj)
-    my_helpers.solver(dict_adj)
+    mv = my_helpers.solver(dict_adj)
     return render(request, 'main/calculate.html', {
         'user_id': user_id,
         'selected_user': selected_user,
@@ -162,7 +162,13 @@ def calculate(request, user_id):
         'risk_parity': risk_parity['weights'],
         'rp_keys': risk_parity['weights'].keys(),
         'ave_return': risk_parity['stats']['ave_return'],
-        'portfolio_vol': risk_parity['stats']['portfolio_vol']
+        'portfolio_vol': risk_parity['stats']['portfolio_vol'],
+        'weights_msr': mv['weights_msr'],
+        'ret_msr': mv['stats_msr'][0],
+        'vol_msr': mv['stats_msr'][1],
+        'weights_min': mv['weights_min'],
+        'ret_min': mv['stats_min'][0],
+        'vol_min': mv['stats_min'][1],
 
         # 'data': data
     })

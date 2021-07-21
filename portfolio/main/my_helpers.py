@@ -77,24 +77,26 @@ def solver(dict_adj):
     df.columns=[key for key in exp_ret]
     df.index = [key for key in exp_ret]
     ef = EfficientFrontier(return_series, cov, weight_bounds=(-1,1))
-    weights = ef.max_sharpe()
-    print(weights)
-#     # str_price = {}
-#     # str_data = list()
-#     # for key in dict_adj:
-#     #     for i in range(len(dict_adj[key])):
-#     #         str_data.append(str(dict_adj[key][i]))
-#     #     str_price[key] = str_data
-#     # df_price = pd.DataFrame(dict_adj, columns=[key for key in dict_adj]).squeeze()
-#     # print(type(df_price))
-#     # dates = pd.date_range(datetime.datetime.now() - relativedelta(years=5),datetime.datetime.now(), 
-#     #           freq='MS').strftime("%Y-%m").tolist()
-#     # # print(dates)
-#     # df_price.insert(0, 'date', dates)
-  
-#     # print(df_price)
-#     # mu = mean_historical_return(df_price)
-#     # S = CovarianceShrinkage(df_price).ledoit_wolf()
-    
+    weights_msr = {}
+    for item in ef.max_sharpe().items():
+        weights_msr[item[0]] = round(item[1]*100, 2)
+    stats_msr = []
+    for i in range(len(ef.portfolio_performance(verbose=True))):
+        stats_msr.append(round(ef.portfolio_performance(verbose=True)[i]*100, 2))
+    es = EfficientFrontier(return_series, cov, weight_bounds=(-1,1))
+    weights_min = {}
+    stats_min = []
+    for item in es.min_volatility().items():
+        weights_min[item[0]] = round(item[1]*100, 2)
+    for i in range(len(es.portfolio_performance(verbose=True))):
+        stats_min.append(round(es.portfolio_performance(verbose=True)[i]*100, 2))
+    # print(weights_min)
+    results = {
+        'weights_msr': weights_msr,
+        'stats_msr': stats_msr,
+        'weights_min': weights_min,
+        'stats_min': stats_min
+    }
+    return results
 
 

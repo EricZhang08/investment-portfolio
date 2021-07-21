@@ -109,5 +109,47 @@
     </tbody>
   </table>
   <h6>Portfolio Return: {{ave_return}}% | Portfolio Volatility: {{portfolio_vol}}%</h6>
+
+  <hr>
+  <h5>Mean-Variance Portfolio Optimization: Maximum Sharpe Ratio Portfolio</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Stock</th>
+        <th scope="col">Weight</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for k, v in weights_msr.items %}
+      <tr>
+        <!-- <th scope="row">1</th> -->
+        <td>{{k}}</td>
+        <td>{{v}}%</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <h6>Portfolio Return: {{ret_msr}}% | Portfolio Volatility: {{vol_msr}}%</h6>
+
+  <hr>
+  <h5>Mean-Variance Portfolio Optimization: Minimum Volatility Portfolio</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Stock</th>
+        <th scope="col">Weight</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for k, v in weights_min.items %}
+      <tr>
+        <!-- <th scope="row">1</th> -->
+        <td>{{k}}</td>
+        <td>{{v}}%</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <h6>Portfolio Return: {{ret_min}}% | Portfolio Volatility: {{vol_min}}%</h6>
   </body>   
   </html>   
