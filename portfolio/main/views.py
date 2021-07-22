@@ -149,6 +149,10 @@ def calculate(request, user_id):
         adj_close.reverse()
         if len(adj_close)>60:
             adj_close = adj_close[0:60]
+
+        if len(adj_close)<60:
+            return HttpResponse(str(stock.ticker) + " does not have enough data")
+            
         dict_adj[stock.ticker] = adj_close
             
     # data = x.get_data("Apple Inc. Common Stock")
