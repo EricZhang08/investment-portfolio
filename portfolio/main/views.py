@@ -3,7 +3,7 @@ from datetime import date
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import User, Stock, Ticker
-from .forms import RegistrationForm, LoginForm, SearchForm
+from .forms import RegistrationForm, LoginForm, SearchForm, ViewForm
 from requests_html import AsyncHTMLSession
 import datetime
 from datetime import timezone
@@ -70,7 +70,12 @@ def register(request):
         })
 def index(request, user_id):
     selected_user = User.objects.get(id=user_id)
+    val = selected_user.portfolio.all()
     form = SearchForm(request.POST or None)
+    viewsform = ViewForm(val, request.POST or None, )
+    # temp = {}
+    # for stock in selected_user.portfolio.all():
+    #     temp[stock.ticker] = ViewForm(initial={'name': stock.ticker})
     if request.method == 'POST':
         if form.is_valid():
             company = form.cleaned_data['company_name']
@@ -78,15 +83,19 @@ def index(request, user_id):
                 stock = Stock(ticker=company)
                 stock.save()
                 selected_user.portfolio.add(stock)
-    # print(selected_user.email)
-            # for stock in selected_user.portfolio.all():
-            #     print(stock)
+        # if viewsform.is_valid():
+        #     print(viewsform.cleaned_data)
     
     search_form = SearchForm()
+
+    
+
+    
     return render(request, 'main/index.html', {
         'selected_user': selected_user,
         'search_form': search_form,
-        'portfolio': selected_user.portfolio.all()
+        'portfolio': selected_user.portfolio.all(),
+        'view_form': viewsform
     })
 
 def login(request):
@@ -117,7 +126,9 @@ def login(request):
 def calculate(request, user_id):
     selected_user = User.objects.get(id=user_id)
     portfolio = selected_user.portfolio.all()
+    viewsform = ViewForm(portfolio, request.POST or None, )
     dict_adj = {}
+    views_dict = {}
     for stock in portfolio:
         ticker = Ticker.objects.get(stock_name=stock.ticker).ticker
         dt = datetime.datetime.today()
@@ -154,9 +165,22 @@ def calculate(request, user_id):
             return HttpResponse(str(stock.ticker) + " does not have enough data")
             
         dict_adj[stock.ticker] = adj_close
-            
+    # print(dict_adj)
+    
     # data = x.get_data("Apple Inc. Common Stock")
     # print(data)
+    if request.method == 'POST':
+        # form = ViewForm(request.POST)
+        if viewsform.is_valid():
+            # print(viewsform.cleaned_data)
+            views = viewsform.cleaned_data
+            keys = list(views.keys())
+            for i in range(0,len(keys)-1, 2):
+                views_dict[views[keys[i]]] = float(views[keys[i+1]])
+        bl = my_helpers.bl_portfolio(dict_adj, views_dict)
+        print(bl)
+    else:
+        bl = my_helpers.bl_portfolio(dict_adj)
     risk_parity = my_helpers.risk_parity(dict_adj)
     mv = my_helpers.solver(dict_adj)
     return render(request, 'main/calculate.html', {
@@ -173,6 +197,13 @@ def calculate(request, user_id):
         'weights_min': mv['weights_min'],
         'ret_min': mv['stats_min'][0],
         'vol_min': mv['stats_min'][1],
+        'bl_weights_msr': bl['weights_msr'],
+        'bl_ret_msr': bl['stats_msr'][0],
+        'bl_vol_msr': bl['stats_msr'][1],
+        'bl_weights_min': bl['weights_min'],
+        'bl_ret_min': bl['stats_min'][0],
+        'bl_vol_min': bl['stats_min'][1],
+
 
         # 'data': data
     })

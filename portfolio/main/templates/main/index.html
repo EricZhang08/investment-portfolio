@@ -135,6 +135,16 @@
       {% endfor %}
     </ul>
   </div>
+
+  <form class="d-flex" autocomplete="off" action="{% url 'calculate' selected_user.id %}" method="POST">
+    {% csrf_token %}
+    <div class="autocomplete" style="width:300px;">
+      <ul>
+        {{ view_form }}
+      </ul>
+      <button class="btn btn-outline-success" type="submit">add</button>
+    </div>
+</form>
   
     
 

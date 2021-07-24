@@ -151,5 +151,47 @@
     </tbody>
   </table>
   <h6>Portfolio Return: {{ret_min}}% | Portfolio Volatility: {{vol_min}}%</h6>
+
+  <hr>
+  <h5>Black-Litterman Portfolio Optimization: Maximum Sharpe Ratio Portfolio</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Stock</th>
+        <th scope="col">Weight</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for k, v in bl_weights_msr.items %}
+      <tr>
+        <!-- <th scope="row">1</th> -->
+        <td>{{k}}</td>
+        <td>{{v}}%</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <h6>Portfolio Return: {{bl_ret_msr}}% | Portfolio Volatility: {{bl_vol_msr}}%</h6>
+
+  <hr>
+  <h5>Black-Litterman Portfolio Optimization: Minimum Volatility Portfolio</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Stock</th>
+        <th scope="col">Weight</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for k, v in bl_weights_min.items %}
+      <tr>
+        <!-- <th scope="row">1</th> -->
+        <td>{{k}}</td>
+        <td>{{v}}%</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <h6>Portfolio Return: {{bl_ret_min}}% | Portfolio Volatility: {{bl_vol_min}}%</h6>
   </body>   
   </html>   
